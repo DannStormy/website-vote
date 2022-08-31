@@ -1,59 +1,63 @@
-<template lang="">
+<template>
   <div class="container">
-    <div :class="['each__list', { 'is__first': index === 0, 'is__second': index === 1}]" v-for="eachList, index in sortList" :key="eachList.id">
-      <div class="left">
-        <p class="website__name">{{eachList.name}}</p>
-        <p>{{eachList.description}}</p>
-      </div>
-      <div class="controls">
-        <p class="vote__count">{{eachList.votes}}</p>
-        <div class="up__down">
-          <button @click="increase(eachList.id)"><img :src=imgUrl1 alt="arrow-up"></button>
-          <button @click="decrease(eachList.id)"><img :src=imgUrl2 alt="arrow-down"></button>
-        </div>
-      </div>
-    </div>
+    <VoteSitesCard
+    v-for="eachList, index in sortList"
+    :key="eachList.id"
+    :id="eachList.id"
+    :index="index"
+    :name="eachList.name"
+    :description="eachList.description"
+    :votes="eachList.votes"
+    :img1=imgUrl1
+    :img2=imgUrl2
+    @increase="increase(eachList.id)"
+    @decrease="decrease(eachList.id)"
+    >
+    </VoteSitesCard>
   </div>
 </template>
 <script>
 import {initialData} from '../data'
+import VoteSitesCard from './VoteSitesCard.vue'
 import vector1 from '../assets/Vector (1).svg'
 import vector2 from '../assets/Vector (2).svg'
+
 export default {
-  data: () => ({
-    list: initialData,
-    imgUrl1: vector1,
-    imgUrl2: vector2
-  }),
-  methods: {
-    increase(id){
-      const updatedList = this.list.map((eachList) => {
-        if (eachList.id === id){
-          return {...eachList, votes: eachList.votes + 1}
+    data: () => ({
+        list: initialData,
+        imgUrl1: vector1,
+        imgUrl2: vector2
+    }),
+    methods: {
+        increase(id) {
+            const updatedList = this.list.map((eachList) => {
+                if (eachList.id === id) {
+                    return { ...eachList, votes: eachList.votes + 1 };
+                }
+                return eachList;
+            });
+            this.list = updatedList;
+        },
+        decrease(id) {
+            const updatedList = this.list.map((eachList) => {
+                if (eachList.id === id) {
+                    return { ...eachList, votes: eachList.votes - 1 };
+                }
+                return eachList;
+            });
+            this.list = updatedList;
         }
-        return eachList;
-      })
-      this.list = updatedList;
     },
-    decrease(id){
-      const updatedList = this.list.map((eachList) => {
-        if (eachList.id === id){
-          return {...eachList, votes: eachList.votes - 1}
+    computed: {
+        sortList() {
+            return [...this.list].sort((a, b) => b.votes - a.votes);
         }
-        return eachList;
-      })
-      this.list = updatedList;
-    }
-  },
-  computed: {
-    sortList() {
-      return [...this.list].sort((a, b) => b.votes - a.votes);
-    }
-  }
+    },
+    components: { VoteSitesCard }
 }
 </script>
 <style>
-  *{
+  /* *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -107,5 +111,5 @@ export default {
   button{
     border: none;
     background-color: transparent;
-  }
+  } */
 </style>
